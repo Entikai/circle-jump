@@ -36,7 +36,7 @@ func spawn_circle(circle_position = null, newplayer = player) -> void:
 	if circle_position == null and newplayer != null:
 		circle_position = newplayer.active_circle.position + generate_random_vector()
 	add_child((circle))
-	circle.public_initialize(circle_position)
+	circle.on_Circle_created(circle_position)
 
 
 func generate_random_vector() -> Vector2:
@@ -46,5 +46,5 @@ func generate_random_vector() -> Vector2:
 
 func _on_Jumper_captured(object):
 	setcamera_position(object.position)
-	object.public_capture()
+	object.on_Circle_captured()
 	call_deferred("spawn_circle")
