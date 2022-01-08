@@ -7,24 +7,20 @@ var jump_speed: int = 1000
 var active_circle: Node2D = null
 
 
+func _ready() -> void:
+	EventBus.connect("game_over", self, "_on_EventBus_game_over")
+
 func _on_Jumper_area_entered(area: Area2D) -> void:
 	active_circle = area
-	set_active_circle_angle(active_circle)
+	area.jumper_is_on_the_circle(position)
 	velocity = Vector2.ZERO
 	emit_signal("captured", area)
 
 
-func set_active_circle_angle(new_active_circle: Node2D) -> void:
-	var _pivot: Node2D = new_active_circle.get_node("Pivot")
-	var starting_angle: float = (position - new_active_circle.position).angle()
-	_pivot.rotation = starting_angle
-
-
 func _unhandled_input(event: InputEvent) -> void:
 	if active_circle and event is InputEventScreenTouch and event.pressed:
-		delete_active_circle(active_circle)
-		active_circle = null
 		jump(jump_speed)
+		delete_active_circle(active_circle)
 
 
 func delete_active_circle(new_active_circle: Node2D) -> void:
@@ -36,8 +32,6 @@ func jump(_jump_speed: int) -> void:
 
 
 func _process(delta: float) -> void:
-
-
 	if active_circle:
 		stay_on_circle(active_circle)
 	else:
@@ -50,3 +44,13 @@ func stay_on_circle(active_circle: Node2D) ->void:
 
 func keep_moving_forward(delta: float, velocity: Vector2) -> void:
 	position += velocity * delta
+
+func _on_EventBus_game_over():
+	die()
+
+func _on_VisibilityNotifier2D_screen_exited() -> void:
+	if !active_circle:
+		die()
+
+func die():
+	queue_free()

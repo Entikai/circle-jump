@@ -21,8 +21,8 @@ func new_player() -> void:
 	spawn_circle(start_position, player)
 
 
-func setcamera_position(_position: Vector2) -> void:
-	camera.position = _position
+func setcamera_position(new_position: Vector2) -> void:
+	camera.position = new_position
 
 
 func instanceplayer():
